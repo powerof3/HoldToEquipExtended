@@ -1,7 +1,7 @@
 void PatchHoldToEquipTypes()
 {
 	{
-		REL::Relocation<std::uintptr_t> target{ REL::Offset(0x0203F492) };
+		REL::Relocation<std::uintptr_t> target{ REL::Offset(0x0203F462) };
 
 		struct HoldToEquipTypes_Code : Xbyak::CodeGenerator
 		{
@@ -9,11 +9,9 @@ void PatchHoldToEquipTypes()
 			{
 				Xbyak::Label retnLabel;
 
-				cmp(al, 35);  // books
-				jz("ok");
 				cmp(al, 34);  // armor
 				jz("ok");
-				cmp(al, 38);  // ingredient
+				cmp(al, 35);  // books
 				jz("ok");
 				cmp(al, 48);  // weapons
 				jz("ok");
@@ -45,34 +43,13 @@ void PatchHoldToEquipTypes()
 
 void MessageCallback(SFSE::MessagingInterface::Message* a_msg) noexcept
 {
-	switch (a_msg->type) {
+    switch (a_msg->type) {
 	case SFSE::MessagingInterface::kPostLoad:
 		PatchHoldToEquipTypes();
 		break;
 	default:
 		break;
 	}
-}
-
-void InitializeLog()
-{
-	auto path = logger::log_directory();
-	if (!path) {
-		stl::report_and_fail("Failed to find standard logging directory"sv);
-	}
-
-	*path /= fmt::format(FMT_STRING("{}.log"), Version::PROJECT);
-	auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(path->string(), true);
-
-	auto log = std::make_shared<spdlog::logger>("global log"s, std::move(sink));
-
-	log->set_level(spdlog::level::info);
-	log->flush_on(spdlog::level::info);
-
-	spdlog::set_default_logger(std::move(log));
-	spdlog::set_pattern("[%H:%M:%S:%e] %v"s);
-
-	logger::info(FMT_STRING("{} v{}"), Version::PROJECT, Version::NAME);
 }
 
 DLLEXPORT constinit auto SFSEPlugin_Version = []() noexcept {
@@ -85,15 +62,13 @@ DLLEXPORT constinit auto SFSEPlugin_Version = []() noexcept {
 	//data.UsesAddressLibrary(true);
 	data.HasNoStructUse(true);
 	//data.IsLayoutDependent(true);
-	data.CompatibleVersions({ SFSE::RUNTIME_SF_1_7_23 });
+	data.CompatibleVersions({ SFSE::RUNTIME_SF_1_7_29 });
 
 	return data;
 }();
 
 DLLEXPORT bool SFSEAPI SFSEPlugin_Load(const SFSE::LoadInterface* a_sfse)
 {
-	InitializeLog();
-
 	SFSE::Init(a_sfse);
 
 	// do stuff

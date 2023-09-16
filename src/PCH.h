@@ -12,8 +12,12 @@
 #endif
 
 namespace logger = SFSE::log;
-namespace stl = SFSE::stl;
 using namespace std::literals;
+
+namespace stl
+{
+	using namespace SFSE::stl;
+}
 
 #define DLLEXPORT extern "C" [[maybe_unused]] __declspec(dllexport)
 
