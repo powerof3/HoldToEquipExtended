@@ -1,7 +1,7 @@
 void PatchHoldToEquipTypes()
 {
 	{
-		REL::Relocation<std::uintptr_t> target{ REL::Offset(0x0203F462) };
+		REL::Relocation<std::uintptr_t> target{ REL::ID(133179), 0x6E };
 
 		struct HoldToEquipTypes_Code : Xbyak::CodeGenerator
 		{
@@ -58,11 +58,11 @@ DLLEXPORT constinit auto SFSEPlugin_Version = []() noexcept {
 	data.PluginVersion(Version::MAJOR);
 	data.PluginName(Version::PROJECT);
 	data.AuthorName("powerofthree");
-	data.UsesSigScanning(true);
-	//data.UsesAddressLibrary(true);
-	data.HasNoStructUse(true);
-	//data.IsLayoutDependent(true);
-	data.CompatibleVersions({ SFSE::RUNTIME_SF_1_7_29 });
+	data.UsesAddressLibrary(true);
+	//data.UsesSigScanning(true);
+	data.IsLayoutDependent(true);
+	//data.HasNoStructUse(true);
+	data.CompatibleVersions({ SFSE::RUNTIME_LATEST });
 
 	return data;
 }();
